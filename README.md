@@ -14,7 +14,6 @@ Some textures from this mod use modified versions of assets created by:
   - Pouch (Closed and Open)
 - **[Futureazoo](https://github.com/Futureazoo/TextureRepository/)** ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/))
   - Large Backpack (Closed and Open)
-  - Leather Strip
 
 These modified textures are licensed under the same terms as the originals,
 meaning that you are free to use them given proper attribution.
