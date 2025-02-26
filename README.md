@@ -1,28 +1,20 @@
-# Fabric Example Mod with StationAPI and BIN Mappings for beta 1.7.3 server + client
-
-## Setup
-
-Run the `_setup/setupMod` task and give it the inputs it needs. **This is a required step.**
-
-[See the StationAPI wiki.](https://github.com/ModificationStation/StationAPI/wiki)
-
-## Common Issues
-
-**My project isn't building after updating babric loom/stationapi!**  
-Run a gradle task with `--refresh-dependencies` as an argument, and this should be fixed. If not, try deleting your project's `.gradle` folder, and try again.
-
-**I get "Invalid source release: 17" as an error!**  
-Use Java 17. Open up `File > Project Structure` and change your SDK to Java 17.  
-If you still get the issue, you may need to go into `File > Settings > Build, Execution, Deployment > Build Tools > Gradle` and change the Java that Gradle uses too.
-
-**How do I stop server.properties from constantly changing?**  
-Remove the last line in the `gitignore` file.
-
-**My client hangs on a blank screen on trying to my test server!**  
-Open your `server.properties` and set `online-mode` to `false`.
-
-[Here for more issues.](https://github.com/calmilamsy/BIN-fabric-example-mod#common-issues)
+# Legacy Luggage
+Bringing simple pouches and backpacks to StationAPI.
 
 ## License
+**Notice:** This project is currently **All Rights Reserved (ARR)**.
+I plan to switch to a **more permissive license** later.
 
-This template is available under the CC0 license. Feel free to learn from it and incorporate it in your own projects.
+However, if you would like to use anything from this mod, 
+**feel free to message me!**
+
+## Attributions
+Some textures from this mod use modified versions of assets created by:
+- **[malcolmriley](https://github.com/malcolmriley/unused-textures)** ([CC BY 4.0](https://creativecommons.org/licenses/by/4.0/))
+  - Pouch (Closed and Open)
+- **[Futureazoo](https://github.com/Futureazoo/TextureRepository/)** ([CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/))
+  - Large Backpack (Closed and Open)
+  - Leather Strip
+
+These modified textures are licensed under the same terms as the originals,
+meaning that you are free to use them given proper attribution.

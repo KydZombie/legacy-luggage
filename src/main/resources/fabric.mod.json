@@ -1,33 +1,36 @@
 {
   "schemaVersion": 1,
-  "id": "%s",
+  "id": "legacyluggage",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Legacy Luggage",
+  "description": "Bringing simple pouches and backpacks to StationAPI.",
   "authors": [
-    "Me!"
+    "KydZombie"
+  ],
+  "contributors": [
+    ""
   ],
   "contact": {
-    "homepage": "https://glass-launcher.net/",
-    "sources": "https://github.com/calmilamsy/stationapi-example-mod"
+    "sources": "https://github.com/KydZombie/legacy-luggage"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/%s/icon.png",
+  "license": "All Rights Reserved",
+  "icon": "assets/legacyluggage/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "stationapi:event_bus": [
-      "%s.events.init.InitListener"
+      "io.github.kydzombie.legacyluggage.LegacyLuggage"
     ],
     "stationapi:event_bus_client": [
+      "io.github.kydzombie.legacyluggage.LegacyLuggageClient"
     ],
     "stationapi:event_bus_server": [
     ]
   },
   "mixins": [
-    "%s.mixins.json"
+    "legacyluggage.mixins.json"
   ],
 
   "depends": {
