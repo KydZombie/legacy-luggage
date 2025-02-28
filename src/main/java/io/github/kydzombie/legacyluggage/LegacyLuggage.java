@@ -1,6 +1,7 @@
 package io.github.kydzombie.legacyluggage;
 
 import io.github.kydzombie.legacyluggage.item.BagItem;
+import io.github.kydzombie.legacyluggage.item.PouchItem;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.EntrypointManager;
@@ -19,15 +20,16 @@ public class LegacyLuggage {
 
     public static final Logger LOGGER = NAMESPACE.getLogger();
 
-    public static BagItem pouchItem;
+    public static PouchItem pouchItem;
+
     public static BagItem smallBackpackItem;
     public static BagItem largeBackpackItem;
 
     @EventListener
     private static void registerItems(ItemRegistryEvent event) {
         // TODO: Finalize sizes
-        pouchItem = new BagItem(NAMESPACE.id("pouch"), 3);
-        smallBackpackItem = new BagItem(NAMESPACE.id("small_backpack"), 5);
-        largeBackpackItem = new BagItem(NAMESPACE.id("large_backpack"), 8);
+        pouchItem = new PouchItem(NAMESPACE.id("pouch"), 3, 1);
+//        smallBackpackItem = new BagItem(NAMESPACE.id("small_backpack"), 6, 3);
+//        largeBackpackItem = new BagItem(NAMESPACE.id("large_backpack"), 12, 4);
     }
 }
