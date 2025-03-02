@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "legacyluggage:item/pouch_open"
+    "layer0": "legacyluggage:item/small_pouch_open"
   }
 }

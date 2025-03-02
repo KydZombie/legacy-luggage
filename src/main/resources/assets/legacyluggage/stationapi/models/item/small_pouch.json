@@ -1,14 +1,14 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "legacyluggage:item/pouch"
+    "layer0": "legacyluggage:item/small_pouch"
   },
   "overrides": [
     {
       "predicate": {
         "legacyluggage:open": 1
       },
-      "model": "legacyluggage:item/pouch_open"
+      "model": "legacyluggage:item/small_pouch_open"
     }
   ]
 }

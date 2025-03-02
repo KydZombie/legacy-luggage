@@ -1,5 +1,5 @@
 # @ is a shorthand for the current mod id, which is legacyluggage. E.g: tile.@.redclay.name
 
-item.@.pouch.name=Pouch
+item.@.small_pouch.name=Small Pouch
 item.@.small_backpack.name=Small Backpack
 item.@.large_backpack.name=Large Backpack

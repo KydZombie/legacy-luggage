@@ -7,12 +7,23 @@ import net.minecraft.entity.player.PlayerEntity;
 import org.lwjgl.opengl.GL11;
 
 public class PouchScreen extends HandledScreen {
+    // TODO: Support different sizes of pouch
     public PouchScreen(PlayerEntity playerEntity, PouchInventory pouchInventory) {
         super(new PouchScreenHandler(playerEntity, pouchInventory));
     }
 
     @Override
+    protected void drawForeground() {
+        int textWidth = textRenderer.getWidth("Small Pouch");
+        int xOffset = (this.backgroundWidth / 2) - (textWidth / 2);
+        this.textRenderer.draw("Small Pouch", xOffset, 6, 4210752);
+        int inventoryYOffset = this.backgroundHeight - 96 + 2;
+        this.textRenderer.draw("Inventory", 8, inventoryYOffset, 4210752);
+    }
+
+    @Override
     protected void drawBackground(float tickDelta) {
+        // TODO: Automatically adjust to pouch size
         int var2 = this.minecraft.textureManager.getTextureId("/assets/legacyluggage/gui/small_pouch.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.textureManager.bindTexture(var2);
