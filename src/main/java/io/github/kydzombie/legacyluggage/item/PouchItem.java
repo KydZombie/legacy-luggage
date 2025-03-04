@@ -1,10 +1,8 @@
 package io.github.kydzombie.legacyluggage.item;
 
 import io.github.kydzombie.legacyluggage.LegacyLuggage;
-import io.github.kydzombie.legacyluggage.gui.screen.BagScreenHandler;
 import io.github.kydzombie.legacyluggage.gui.screen.PouchScreenHandler;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
-import io.github.kydzombie.legacyluggage.inventory.PouchInventory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -39,12 +37,12 @@ public class PouchItem extends TemplateItem implements IBagItem {
     public ItemStack use(ItemStack stack, World world, PlayerEntity user) {
         // TODO: Sound effect
         setOpen(stack, true);
-        PouchInventory inventory = new PouchInventory(stack);
+        BagInventory inventory = new BagInventory(stack);
         GuiHelper.openGUI(
                 user,
-                LegacyLuggage.NAMESPACE.id("pouch"),
+                LegacyLuggage.NAMESPACE.id("open_pouch"),
                 inventory,
-                new PouchScreenHandler(user, inventory)
+                new PouchScreenHandler(user.inventory, inventory)
         );
         return super.use(stack, world, user);
     }

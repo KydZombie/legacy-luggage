@@ -1,38 +1,30 @@
 package io.github.kydzombie.legacyluggage.inventory;
 
 import io.github.kydzombie.legacyluggage.LegacyLuggage;
-import io.github.kydzombie.legacyluggage.item.BagItem;
+import io.github.kydzombie.legacyluggage.item.IBagItem;
+import io.github.kydzombie.legacyluggage.item.PouchItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 
+// TODO: Probably add a way to get the bag from this,
+//  so that the bag screen handlers can be
+//  merged into one
 public class BagInventory implements Inventory {
-    public ItemStack bagStack;
     private final ItemStack[] inventory;
-    private final int size;
-    private final int rowSize;
 
+    // TODO: Decide if using @NotNull and stuff
     public BagInventory(ItemStack bagStack) {
-        if (bagStack == null) {
-            throw new NullPointerException("Bag is null??");
-        }
-        this.bagStack = bagStack;
-        BagItem bagItem = (BagItem) bagStack.getItem();
-        this.size = bagItem.getSize(bagStack);
-        this.rowSize = bagItem.getRowSize(bagStack);
-        inventory = new ItemStack[size];
-        readNbt();
+        IBagItem bagItem = (IBagItem) bagStack.getItem();
+        inventory = new ItemStack[bagItem.getInventorySize(bagStack)];
+        readNbt(bagStack);
     }
 
     @Override
     public int size() {
-        return size;
-    }
-
-    public int rowSize() {
-        return rowSize;
+        return inventory.length;
     }
 
     @Override
@@ -74,7 +66,7 @@ public class BagInventory implements Inventory {
 
     @Override
     public String getName() {
-        return bagStack.getItem().getTranslatedName();
+        return "Pouch";
     }
 
     @Override
@@ -84,6 +76,7 @@ public class BagInventory implements Inventory {
 
     @Override
     public void markDirty() {
+
     }
 
     @Override
@@ -91,29 +84,8 @@ public class BagInventory implements Inventory {
         return true;
     }
 
-    public void readNbt() {
-        NbtCompound nbt = bagStack.getStationNbt();
-        NbtList nbtList = nbt.getList("items");
-        for (int i = 0; i < nbtList.size(); i++) {
-            NbtCompound itemNbt = (NbtCompound) nbtList.get(i);
-            if (!itemNbt.contains("slot")) {
-                System.out.println("fuck");
-            }
-            byte slot = itemNbt.getByte("slot");
-            if (slot < 0 || slot > inventory.length) {
-                LegacyLuggage.LOGGER.error(
-                        "Tried to load a stack from {} of slot {} but " +
-                                "that is too high for an inventory of size {}!",
-                        bagStack, slot, inventory.length
-                );
-                continue;
-            }
-            inventory[slot] = new ItemStack(itemNbt.getCompound("item"));
-        }
-    }
-
-    public void writeNbt() {
-        NbtCompound nbt = bagStack.getStationNbt();
+    public void writeNbt(ItemStack itemStack) {
+        NbtCompound nbt = itemStack.getStationNbt();
         NbtList nbtList = new NbtList();
         for (byte slot = 0; slot < inventory.length; slot++) {
             if (inventory[slot] == null) continue;
@@ -123,5 +95,23 @@ public class BagInventory implements Inventory {
             nbtList.add(itemNbt);
         }
         nbt.put("items", nbtList);
+    }
+
+    public void readNbt(ItemStack itemStack) {
+        NbtCompound nbt = itemStack.getStationNbt();
+        NbtList nbtList = nbt.getList("items");
+        for (int i = 0; i < nbtList.size(); i++) {
+            NbtCompound itemNbt = (NbtCompound) nbtList.get(i);
+            byte slot = itemNbt.getByte("slot");
+            if (slot < 0 || slot > inventory.length) {
+                LegacyLuggage.LOGGER.error(
+                        "Tried to load a stack from {} of slot {} but " +
+                                "that is too high for an inventory of size {}!",
+                        itemStack, slot, inventory.length
+                );
+                continue;
+            }
+            inventory[slot] = new ItemStack(itemNbt.getCompound("item"));
+        }
     }
 }

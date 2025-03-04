@@ -77,6 +77,10 @@ dependencies {
 	// transitiveImplementation tells babric loom that you want this dependency to be pulled into other mod's development workspaces. Best used ONLY for required dependencies.
 	modImplementation("net.modificationstation:StationAPI:${project.properties["stationapi_version"]}")
 
+	// API mods.
+	// https://github.com/matthewperiut/accessory-api
+	modImplementation("maven.modrinth:accessory-api:${project.properties["accessory_api_version"]}")
+
 	// Extra mods.
 	// https://github.com/calmilamsy/glass-config-api
 	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${project.properties["gcapi_version"]}")
@@ -84,6 +88,8 @@ dependencies {
 	modImplementation("net.glasslauncher.mods:ModMenu:${project.properties["modmenu_version"]}")
 	// https://github.com/Glass-Series/Always-More-Items
 	modImplementation("net.glasslauncher.mods:AlwaysMoreItems:${project.properties["alwaysmoreitems_version"]}")
+	// https://github.com/DanyGames2014/UniTweaks
+	modImplementation("maven.modrinth:UniTweaks:${project.properties["unitweaks_version"]}")
 }
 
 tasks.withType<ProcessResources> {

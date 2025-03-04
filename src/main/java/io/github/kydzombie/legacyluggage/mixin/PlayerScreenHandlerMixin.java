@@ -1,16 +1,10 @@
 package io.github.kydzombie.legacyluggage.mixin;
 
-import io.github.kydzombie.legacyluggage.gui.screen.slot.BagSlot;
-import io.github.kydzombie.legacyluggage.inventory.BagInventory;
-import io.github.kydzombie.legacyluggage.inventory.NewBagInventory;
-import io.github.kydzombie.legacyluggage.item.BagItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;

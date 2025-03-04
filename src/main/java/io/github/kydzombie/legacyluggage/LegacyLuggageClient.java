@@ -1,20 +1,24 @@
 package io.github.kydzombie.legacyluggage;
 
-import io.github.kydzombie.legacyluggage.gui.screen.ingame.BagScreen;
+import io.github.kydzombie.legacyluggage.gui.screen.ingame.BackpackScreen;
 import io.github.kydzombie.legacyluggage.gui.screen.ingame.PouchScreen;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
-import io.github.kydzombie.legacyluggage.inventory.PouchInventory;
-import io.github.kydzombie.legacyluggage.item.BagItem;
 import io.github.kydzombie.legacyluggage.item.IBagItem;
 import net.mine_diver.unsafeevents.listener.EventListener;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.BlockView;
+import net.modificationstation.stationapi.api.client.event.keyboard.KeyStateChangedEvent;
+import net.modificationstation.stationapi.api.client.event.option.KeyBindingRegisterEvent;
 import net.modificationstation.stationapi.api.client.event.render.model.ItemModelPredicateProviderRegistryEvent;
 import net.modificationstation.stationapi.api.client.gui.screen.GuiHandler;
 import net.modificationstation.stationapi.api.event.registry.GuiHandlerRegistryEvent;
 import net.modificationstation.stationapi.api.mod.entrypoint.EntrypointManager;
+import net.modificationstation.stationapi.api.network.packet.MessagePacket;
+import net.modificationstation.stationapi.api.network.packet.PacketHelper;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.input.Keyboard;
 
 import java.lang.invoke.MethodHandles;
 
@@ -40,16 +44,39 @@ public class LegacyLuggageClient {
 
     @EventListener
     private static void registerGuiHandlers(GuiHandlerRegistryEvent event) {
-        event.register(LegacyLuggage.NAMESPACE.id("bag"), new GuiHandler((GuiHandler.ScreenFactoryNoMessage) (player, inventory) -> {
-            return new BagScreen(player.inventory, new BagInventory(player.inventory.getStack(player.inventory.selectedSlot)));
-        }, () -> null));
-
         event.register(
-                LegacyLuggage.NAMESPACE.id("pouch"),
+                LegacyLuggage.NAMESPACE.id("open_pouch"),
                 new GuiHandler(
-                        (GuiHandler.ScreenFactoryNoMessage) (player, inventory) -> new PouchScreen(player, new PouchInventory(player.getHand())),
+                        (GuiHandler.ScreenFactoryNoMessage) (player, inventory) -> new PouchScreen(player.inventory, new BagInventory(player.getHand())),
                         () -> null
                 )
         );
+
+        event.register(
+                LegacyLuggage.NAMESPACE.id("open_backpack"),
+                new GuiHandler(
+                        (GuiHandler.ScreenFactoryNoMessage) (player, inventory) -> new BackpackScreen(player.inventory, new BagInventory(player.inventory.armor[2])),
+                        () -> null
+                )
+        );
+    }
+
+    private static KeyBinding openBackpackBind;
+
+    @EventListener
+    private static void registerKeybinds(KeyBindingRegisterEvent event) {
+        openBackpackBind = new KeyBinding("key.legacyluggage.open_backpack", Keyboard.KEY_B);
+        event.keyBindings.add(openBackpackBind);
+    }
+
+    // TODO: Figure out if I want hold behavior,
+    //  and if so, what it should do.
+    @EventListener
+    private static void handleKeyboardState(KeyStateChangedEvent event) {
+        if (event.environment == KeyStateChangedEvent.Environment.IN_GAME && Keyboard.getEventKey() == openBackpackBind.code) {
+            if (Keyboard.getEventKeyState()) {
+                PacketHelper.send(new MessagePacket(LegacyLuggage.NAMESPACE.id("open_backpack")));
+            }
+        }
     }
 }

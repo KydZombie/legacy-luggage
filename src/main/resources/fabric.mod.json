@@ -20,6 +20,9 @@
 
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "io.github.kydzombie.legacyluggage.LegacyLuggage"
+    ],
     "stationapi:event_bus": [
       "io.github.kydzombie.legacyluggage.LegacyLuggage"
     ],
