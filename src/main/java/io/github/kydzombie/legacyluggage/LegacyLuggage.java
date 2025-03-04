@@ -1,15 +1,22 @@
 package io.github.kydzombie.legacyluggage;
 
 import com.matthewperiut.accessoryapi.api.AccessoryRegister;
+import com.matthewperiut.accessoryapi.api.helper.AccessoryAccess;
+import io.github.kydzombie.legacyluggage.block.BagTableBlock;
+import io.github.kydzombie.legacyluggage.block.entity.BagTableBlockEntity;
 import io.github.kydzombie.legacyluggage.gui.screen.BackpackScreenHandler;
+import io.github.kydzombie.legacyluggage.gui.screen.PouchBagScreenHandler;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
 import io.github.kydzombie.legacyluggage.item.PouchBagItem;
 import io.github.kydzombie.legacyluggage.item.PouchItem;
 import io.github.kydzombie.legacyluggage.item.WearableBagItem;
 import net.fabricmc.api.ModInitializer;
 import net.mine_diver.unsafeevents.listener.EventListener;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.modificationstation.stationapi.api.event.block.entity.BlockEntityRegisterEvent;
+import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
 import net.modificationstation.stationapi.api.event.registry.ItemRegistryEvent;
 import net.modificationstation.stationapi.api.event.registry.MessageListenerRegistryEvent;
 import net.modificationstation.stationapi.api.gui.screen.container.GuiHelper;
@@ -38,6 +45,18 @@ public class LegacyLuggage implements ModInitializer {
         AccessoryRegister.add("back");
     }
 
+    public static BagTableBlock bagTableBlock;
+
+    @EventListener
+    private static void registerBlocks(BlockRegistryEvent event) {
+        bagTableBlock = new BagTableBlock(NAMESPACE.id("bag_table"), Material.WOOD);
+    }
+
+    @EventListener
+    private static void registerBlockEntities(BlockEntityRegisterEvent event) {
+        event.register(BagTableBlockEntity.class, NAMESPACE.id("bag_table").toString());
+    }
+
     public static PouchItem smallPouchItem;
 
     public static WearableBagItem smallBackpackItem;
@@ -62,16 +81,28 @@ public class LegacyLuggage implements ModInitializer {
     }
 
     private void handleOpenBackpack(PlayerEntity player, MessagePacket packet) {
-        ItemStack backpackStack = player.inventory.armor[2];
-        if (backpackStack != null && backpackStack.getItem() instanceof WearableBagItem) {
-            BagInventory backpackInventory = new BagInventory(backpackStack);
-
-            GuiHelper.openGUI(
-                    player,
-                    NAMESPACE.id("open_backpack"),
-                    backpackInventory,
-                    new BackpackScreenHandler(player.inventory, backpackInventory)
-            );
+        ItemStack[] backStacks = AccessoryAccess.getAccessories(player, "back");
+        if (backStacks.length > 0) {
+            ItemStack pouchBagStack = backStacks[0];
+            if (pouchBagStack != null && pouchBagStack.getItem() instanceof PouchBagItem) {
+                GuiHelper.openGUI(
+                        player,
+                        NAMESPACE.id("open_pouch_bag"),
+                        null,
+                        new PouchBagScreenHandler(player.inventory, pouchBagStack)
+                );
+            }
         }
+//        ItemStack backpackStack = player.inventory.armor[2];
+//        if (backpackStack != null && backpackStack.getItem() instanceof WearableBagItem) {
+//            BagInventory backpackInventory = new BagInventory(backpackStack);
+//
+//            GuiHelper.openGUI(
+//                    player,
+//                    NAMESPACE.id("open_backpack"),
+//                    backpackInventory,
+//                    new BackpackScreenHandler(player.inventory, backpackInventory)
+//            );
+//        }
     }
 }

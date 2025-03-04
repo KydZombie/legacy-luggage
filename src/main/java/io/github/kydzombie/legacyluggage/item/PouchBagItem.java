@@ -42,6 +42,9 @@ public class PouchBagItem extends TemplateItem implements Accessory {
         for (int i = 0; i < maxPouches; i++) {
             ItemStack pouchStack = pouchStacks[i];
             if (pouchStack == null) continue;
+            if (!(pouchStack.getItem() instanceof PouchItem)) {
+                LegacyLuggage.LOGGER.error("Attempted to set a pouch that isn't a pouch!");
+            }
             NbtCompound pouchNbt = new NbtCompound();
             pouchNbt.putByte("slot", (byte) i);
             pouchNbt.put("item", pouchStacks[i].writeNbt(new NbtCompound()));
@@ -54,7 +57,7 @@ public class PouchBagItem extends TemplateItem implements Accessory {
     public ItemStack use(ItemStack stack, World world, PlayerEntity user) {
         if (user.isSneaking()) {
             ItemStack[] pouchStacks = new ItemStack[maxPouches];
-            ItemStack firstPouchStack = new ItemStack(LegacyLuggage.pouchBagItem);
+            ItemStack firstPouchStack = new ItemStack(LegacyLuggage.smallPouchItem);
             pouchStacks[0] = firstPouchStack;
             setPouches(stack, pouchStacks);
             LegacyLuggage.LOGGER.info("Added pouches");
