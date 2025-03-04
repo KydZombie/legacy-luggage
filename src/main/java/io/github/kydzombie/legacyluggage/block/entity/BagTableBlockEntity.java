@@ -1,6 +1,6 @@
 package io.github.kydzombie.legacyluggage.block.entity;
 
-import io.github.kydzombie.legacyluggage.item.PouchBagItem;
+import io.github.kydzombie.legacyluggage.item.BackpackItem;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -8,47 +8,52 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class BagTableBlockEntity extends BlockEntity implements Inventory {
     // TODO: Decide if there should be overflow slots.
     // TODO: Adjustable size
-    ItemStack[] inventory = new ItemStack[3];
+    ArrayList<ItemStack> inventory = new ArrayList<>(1);
+
+    public BagTableBlockEntity() {
+        inventory.add(null);
+    }
 
     @Override
     public int size() {
-        return inventory.length;
+        return inventory.size();
     }
 
     @Override
     public ItemStack getStack(int slot) {
-        return inventory[slot];
+        return inventory.get(slot);
     }
 
     @Override
     public ItemStack removeStack(int slot, int amount) {
         System.out.println("remove stack");
 
-        if (inventory[slot] != null) {
+        if (inventory.get(slot) != null) {
             ItemStack retStack;
-            if (inventory[slot].count <= amount) {
-                retStack = inventory[slot];
-                inventory[slot] = null;
+            if (inventory.get(slot).count <= amount) {
+                retStack = inventory.get(slot);
+                inventory.set(slot, null);
             } else {
-                retStack = inventory[slot].split(amount);
-                if (inventory[slot].count == 0) {
-                    inventory[slot] = null;
+                retStack = inventory.get(slot).split(amount);
+                if (inventory.get(slot).count == 0) {
+                    inventory.set(slot, null);
                 }
             }
             if (slot == 0) {
-                for (int i = 1; i < inventory.length; i++) {
-                    setStack(i, null);
-                }
+                inventory.clear();
+                inventory.add(null);
             } else {
-                ItemStack backpackStack = inventory[0];
-                if (backpackStack != null && backpackStack.getItem() instanceof PouchBagItem pouchBagItem) {
-                    ItemStack[] pouchStacks = Arrays.copyOfRange(inventory, 1, inventory.length);
-                    pouchBagItem.setPouches(backpackStack, pouchStacks);
+                ItemStack backpackStack = inventory.get(0);
+                if (backpackStack != null && backpackStack.getItem() instanceof BackpackItem backpackItem) {
+                    List<ItemStack> pouchStacks = inventory.subList(1, inventory.size());
+                    backpackItem.setPouches(backpackStack, pouchStacks.toArray(ItemStack[]::new));
                 }
             }
             markDirty();
@@ -61,23 +66,24 @@ public class BagTableBlockEntity extends BlockEntity implements Inventory {
     @Override
     public void setStack(int slot, ItemStack stack) {
         System.out.println("set stack");
-        this.inventory[slot] = stack;
+        inventory.set(slot, stack);
         if (stack != null && stack.count > this.getMaxCountPerStack()) {
             stack.count = this.getMaxCountPerStack();
         }
 
-        ItemStack backpackStack = inventory[0];
+        ItemStack backpackStack = inventory.get(0);
         if (slot == 0) {
-            if (backpackStack != null && backpackStack.getItem() instanceof PouchBagItem pouchBagItem) {
-                ItemStack[] pouches = pouchBagItem.getPouches(backpackStack);
-                for (int i = 0; i < pouches.length; i++) {
-                    setStack(i + 1, pouches[i]);
+            if (backpackStack != null && backpackStack.getItem() instanceof BackpackItem backpackItem) {
+                ItemStack[] pouches = backpackItem.getPouches(backpackStack);
+                if (inventory.size() > 2) {
+                    inventory.subList(1, inventory.size()).clear();
                 }
+                inventory.addAll(Arrays.asList(pouches));
             }
         } else {
-            if (backpackStack != null && backpackStack.getItem() instanceof PouchBagItem pouchBagItem) {
-                ItemStack[] pouchStacks = Arrays.copyOfRange(inventory, 1, inventory.length);
-                pouchBagItem.setPouches(backpackStack, pouchStacks);
+            if (backpackStack != null && backpackStack.getItem() instanceof BackpackItem backpackItem) {
+                List<ItemStack> pouchStacks = inventory.subList(1, inventory.size());
+                backpackItem.setPouches(backpackStack, pouchStacks.toArray(ItemStack[]::new));
             }
         }
 
@@ -93,33 +99,29 @@ public class BagTableBlockEntity extends BlockEntity implements Inventory {
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        NbtList var2 = nbt.getList("items");
-        this.inventory = new ItemStack[this.size()];
-
-        for (int var3 = 0; var3 < var2.size(); var3++) {
-            NbtCompound var4 = (NbtCompound)var2.get(var3);
-            int var5 = var4.getByte("slot") & 255;
-            if (var5 >= 0 && var5 < this.inventory.length) {
-                this.inventory[var5] = new ItemStack(var4);
+        this.inventory = new ArrayList<>(1);
+        if (nbt.contains("backpack")) {
+            NbtCompound backpackNbt = nbt.getCompound("backpack");
+            ItemStack backpackStack = new ItemStack(backpackNbt);
+            inventory.add(0, backpackStack);
+            if (backpackStack.getItem() instanceof BackpackItem backpackItem) {
+                ItemStack[] pouches = backpackItem.getPouches(backpackStack);
+                if (inventory.size() > 2) {
+                    inventory.subList(1, inventory.size()).clear();
+                }
+                inventory.addAll(Arrays.asList(pouches));
             }
+        } else {
+            inventory.add(0, null);
         }
     }
 
     @Override
     public void writeNbt(NbtCompound nbt) {
         super.writeNbt(nbt);
-        NbtList var2 = new NbtList();
-
-        for (int var3 = 0; var3 < this.inventory.length; var3++) {
-            if (this.inventory[var3] != null) {
-                NbtCompound var4 = new NbtCompound();
-                var4.putByte("slot", (byte)var3);
-                this.inventory[var3].writeNbt(var4);
-                var2.add(var4);
-            }
+        if (inventory.get(0) != null) {
+            nbt.put("backpack", inventory.get(0).writeNbt(new NbtCompound()));
         }
-
-        nbt.put("items", var2);
     }
 
     @Override

@@ -1,10 +1,11 @@
 package io.github.kydzombie.legacyluggage.gui.screen;
 
+import com.matthewperiut.accessoryapi.api.helper.AccessoryAccess;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.LockedSlot;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.PouchSlot;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
 import io.github.kydzombie.legacyluggage.item.IBagItem;
-import io.github.kydzombie.legacyluggage.item.WearableBagItem;
+import io.github.kydzombie.legacyluggage.item.BackpackItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -12,19 +13,26 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
 public class BackpackScreenHandler extends ScreenHandler {
-    public WearableBagItem backpackItem;
+    public ItemStack bagStack;
+    public BackpackItem backpackItem;
 
-    BagInventory backpackInventory;
+    public ItemStack[] pouchStacks;
+    public BagInventory[] pouchInventories;
+    public BackpackScreenHandler(PlayerInventory playerInventory, ItemStack bagStack) {
+        this.bagStack = bagStack;
+        backpackItem = (BackpackItem) bagStack.getItem();
+        pouchStacks = backpackItem.getPouches(bagStack);
+        pouchInventories = new BagInventory[pouchStacks.length];
+        for (int i = 0; i < pouchInventories.length; i++) {
+            if (pouchStacks[i] == null) continue;
+            pouchInventories[i] = new BagInventory(pouchStacks[i]);
+        }
 
-    public BackpackScreenHandler(PlayerInventory playerInventory, BagInventory backpackInventory) {
-        ItemStack backpackStack = playerInventory.armor[2];
-        backpackItem = (WearableBagItem) backpackStack.getItem();
-        this.backpackInventory = backpackInventory;
-
-        for (int row = 0; row < 2; row++) {
-            for (int col = 0; col < 3; col++) {
-                int slot = col + row * 3;
-                addSlot(new PouchSlot(backpackInventory, slot, 62 + (col * 18), 26 + (row * 18)));
+        for (int i = 0; i < pouchInventories.length; i++) {
+            BagInventory pouchInventory = pouchInventories[i];
+            if (pouchInventory == null) continue;
+            for (int col = 0; col < pouchInventory.size(); col++) {
+                addSlot(new PouchSlot(pouchInventory, col, 6 + col * 18, 6 + i * 18));
             }
         }
 
@@ -54,13 +62,21 @@ public class BackpackScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        ItemStack stack = player.inventory.armor[2];
-        return stack != null && stack.getItem() instanceof WearableBagItem;
+        ItemStack[] backStacks = AccessoryAccess.getAccessories(player, "back");
+        return backStacks.length > 0 &&
+                backStacks[0] != null &&
+                backStacks[0].getItem() instanceof BackpackItem;
     }
 
     @Override
     public void onClosed(PlayerEntity player) {
-        backpackInventory.writeNbt(player.inventory.armor[2]);
+        for (int i = 0; i < pouchInventories.length; i++) {
+            BagInventory pouchInventory = pouchInventories[i];
+            if (pouchInventory == null) continue;
+            pouchInventory.writeNbt(pouchStacks[i]);
+        }
+        backpackItem.setPouches(bagStack, pouchStacks);
+
         super.onClosed(player);
     }
 }

@@ -1,6 +1,6 @@
 package io.github.kydzombie.legacyluggage.gui.screen.slot;
 
-import io.github.kydzombie.legacyluggage.item.PouchBagItem;
+import io.github.kydzombie.legacyluggage.item.BackpackItem;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.slot.Slot;
@@ -13,6 +13,6 @@ public class BagTableBagSlot extends Slot {
     @Override
     public boolean canInsert(ItemStack stack) {
         if (stack == null) return true;
-        return stack.getItem() instanceof PouchBagItem;
+        return stack.getItem() instanceof BackpackItem;
     }
 }

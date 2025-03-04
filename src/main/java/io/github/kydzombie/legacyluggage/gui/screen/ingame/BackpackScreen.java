@@ -4,32 +4,38 @@ import io.github.kydzombie.legacyluggage.gui.screen.BackpackScreenHandler;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.opengl.GL11;
 
 public class BackpackScreen extends HandledScreen {
-    // TODO: Support different sizes of backpack
-    public BackpackScreen(PlayerInventory playerInventory, BagInventory backpackInventory) {
-        super(new BackpackScreenHandler(playerInventory, backpackInventory));
+    public BackpackScreen(PlayerInventory playerInventory, ItemStack bagStack) {
+        super(new BackpackScreenHandler(playerInventory, bagStack));
     }
 
     @Override
     protected void drawForeground() {
-        int textWidth = textRenderer.getWidth("Small Backpack");
-        int xOffset = (this.backgroundWidth / 2) - (textWidth / 2);
-        this.textRenderer.draw("Small Backpack", xOffset, 6, 4210752);
-        int inventoryYOffset = this.backgroundHeight - 96 + 2;
-        this.textRenderer.draw("Inventory", 8, inventoryYOffset, 4210752);
     }
 
     @Override
     protected void drawBackground(float tickDelta) {
-        // TODO: Automatically adjust to pouch size
-        int var2 = this.minecraft.textureManager.getTextureId("/assets/legacyluggage/gui/small_backpack.png");
+        int textureId = minecraft.textureManager.getTextureId("/assets/legacyluggage/gui/general_bag.png");
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.textureManager.bindTexture(var2);
-        int var3 = (this.width - this.backgroundWidth) / 2;
-        int var4 = (this.height - this.backgroundHeight) / 2;
-        this.drawTexture(var3, var4, 0, 0, this.backgroundWidth, this.backgroundHeight);
+        minecraft.textureManager.bindTexture(textureId);
+        int renderOffsetX = (width - backgroundWidth) / 2;
+        int renderOffsetY = (height - backgroundHeight) / 2;
+        drawTexture(renderOffsetX, renderOffsetY, 0, 0, backgroundWidth, backgroundHeight);
+
+        BackpackScreenHandler handler = (BackpackScreenHandler) container;
+        BagInventory[] pouchInventories = handler.pouchInventories;
+        for (int invIndex = 0; invIndex < pouchInventories.length; invIndex++) {
+            BagInventory inventory = pouchInventories[invIndex];
+            if (inventory == null) continue;
+            int pouchU = 176;
+            int pouchV = 0;
+            for (int slot = 0; slot < inventory.size(); slot++) {
+                drawTexture(5 + renderOffsetX + slot * 18, 5 + renderOffsetY + invIndex * 18, pouchU, pouchV, 18, 18);
+            }
+        }
     }
 
     @Override

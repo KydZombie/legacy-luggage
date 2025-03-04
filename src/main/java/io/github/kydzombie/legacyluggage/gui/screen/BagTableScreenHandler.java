@@ -4,18 +4,41 @@ import io.github.kydzombie.legacyluggage.block.entity.BagTableBlockEntity;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.BagTableBagSlot;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.BagTablePouchSlot;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.LockedSlot;
+import io.github.kydzombie.legacyluggage.item.BackpackItem;
 import io.github.kydzombie.legacyluggage.item.IBagItem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
 public class BagTableScreenHandler extends ScreenHandler {
+    PlayerInventory playerInventory;
+    BagTableBlockEntity blockEntity;
     public BagTableScreenHandler(PlayerInventory playerInventory, BagTableBlockEntity blockEntity) {
+        this.playerInventory = playerInventory;
+        this.blockEntity = blockEntity;
+
+        updateSlots();
+    }
+
+    // TODO: Idk why it doesn't work on server.
+    //  Just crashes the client with an OOB error.
+    public void updateSlots() {
+        slots.clear();
+        this.trackedStacks.clear();
+
         addSlot(new BagTableBagSlot(blockEntity, 0, 0, 0));
-        addSlot(new BagTablePouchSlot(blockEntity, 1, 36, 0));
-        addSlot(new BagTablePouchSlot(blockEntity, 2, 54, 0));
+        ItemStack bagStack = blockEntity.getStack(0);
+        if (bagStack != null && bagStack.getItem() instanceof BackpackItem backpackItem) {
+            for (int i = 0; i < backpackItem.getPouches(bagStack).length; i++) {
+                addSlot(new BagTablePouchSlot(blockEntity, i + 1, 36 + 18 * i, 0));
+            }
+        }
+
 
         // Player inventory
         for(int row = 0; row < 3; ++row) {
@@ -39,6 +62,19 @@ public class BagTableScreenHandler extends ScreenHandler {
                 addSlot(new Slot(playerInventory, slot, 8 + slot * 18, 142));
             }
         }
+    }
+
+    @Override
+    public void onSlotUpdate(Inventory inventory) {
+        updateSlots();
+        super.onSlotUpdate(inventory);
+    }
+
+    @Environment(EnvType.CLIENT)
+    @Override
+    public void updateSlotStacks(ItemStack[] stacks) {
+        updateSlots();
+        super.updateSlotStacks(stacks);
     }
 
     @Override

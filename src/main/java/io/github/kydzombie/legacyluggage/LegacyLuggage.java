@@ -5,11 +5,8 @@ import com.matthewperiut.accessoryapi.api.helper.AccessoryAccess;
 import io.github.kydzombie.legacyluggage.block.BagTableBlock;
 import io.github.kydzombie.legacyluggage.block.entity.BagTableBlockEntity;
 import io.github.kydzombie.legacyluggage.gui.screen.BackpackScreenHandler;
-import io.github.kydzombie.legacyluggage.gui.screen.PouchBagScreenHandler;
-import io.github.kydzombie.legacyluggage.inventory.BagInventory;
-import io.github.kydzombie.legacyluggage.item.PouchBagItem;
+import io.github.kydzombie.legacyluggage.item.BackpackItem;
 import io.github.kydzombie.legacyluggage.item.PouchItem;
-import io.github.kydzombie.legacyluggage.item.WearableBagItem;
 import net.fabricmc.api.ModInitializer;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.block.material.Material;
@@ -59,19 +56,20 @@ public class LegacyLuggage implements ModInitializer {
 
     public static PouchItem smallPouchItem;
 
-    public static WearableBagItem smallBackpackItem;
-//    public static BagItem largeBackpackItem;
+//    public static ClassicBackpackItem smallBackpackItem;
 
-    public static PouchBagItem pouchBagItem;
+    public static BackpackItem smallBackpackItem;
+    public static BackpackItem largeBackpackItem;
 
     @EventListener
     private static void registerItems(ItemRegistryEvent event) {
         // TODO: Finalize sizes
         smallPouchItem = new PouchItem(NAMESPACE.id("small_pouch"), 3, 1);
 
-        smallBackpackItem = new WearableBagItem(NAMESPACE.id("small_backpack"), 3, 2);
+//        smallBackpackItem = new ClassicBackpackItem(NAMESPACE.id("small_backpack"), 3, 2);
 
-        pouchBagItem = new PouchBagItem(NAMESPACE.id("pouch_bag"), 2);
+        smallBackpackItem = new BackpackItem(NAMESPACE.id("small_backpack"), 2);
+        largeBackpackItem = new BackpackItem(NAMESPACE.id("large_backpack"), 4);
     }
 
     @EventListener
@@ -84,15 +82,16 @@ public class LegacyLuggage implements ModInitializer {
         ItemStack[] backStacks = AccessoryAccess.getAccessories(player, "back");
         if (backStacks.length > 0) {
             ItemStack pouchBagStack = backStacks[0];
-            if (pouchBagStack != null && pouchBagStack.getItem() instanceof PouchBagItem) {
+            if (pouchBagStack != null && pouchBagStack.getItem() instanceof BackpackItem) {
                 GuiHelper.openGUI(
                         player,
                         NAMESPACE.id("open_pouch_bag"),
                         null,
-                        new PouchBagScreenHandler(player.inventory, pouchBagStack)
+                        new BackpackScreenHandler(player.inventory, pouchBagStack)
                 );
             }
         }
+
 //        ItemStack backpackStack = player.inventory.armor[2];
 //        if (backpackStack != null && backpackStack.getItem() instanceof WearableBagItem) {
 //            BagInventory backpackInventory = new BagInventory(backpackStack);

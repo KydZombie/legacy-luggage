@@ -11,10 +11,10 @@ import net.modificationstation.stationapi.api.template.item.TemplateItem;
 import net.modificationstation.stationapi.api.util.Identifier;
 
 // TODO: Make it no longer an accessory, or keep it idk
-public class PouchBagItem extends TemplateItem implements Accessory {
+public class BackpackItem extends TemplateItem implements Accessory {
     int maxPouches;
 
-    public PouchBagItem(Identifier identifier, int maxPouches) {
+    public BackpackItem(Identifier identifier, int maxPouches) {
         super(identifier);
         setTranslationKey(identifier);
         setMaxCount(1);

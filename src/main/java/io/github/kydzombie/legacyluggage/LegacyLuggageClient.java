@@ -2,9 +2,8 @@ package io.github.kydzombie.legacyluggage;
 
 import com.matthewperiut.accessoryapi.api.helper.AccessoryAccess;
 import io.github.kydzombie.legacyluggage.block.entity.BagTableBlockEntity;
-import io.github.kydzombie.legacyluggage.gui.screen.ingame.BackpackScreen;
 import io.github.kydzombie.legacyluggage.gui.screen.ingame.BagTableScreen;
-import io.github.kydzombie.legacyluggage.gui.screen.ingame.PouchBagScreen;
+import io.github.kydzombie.legacyluggage.gui.screen.ingame.BackpackScreen;
 import io.github.kydzombie.legacyluggage.gui.screen.ingame.PouchScreen;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
 import io.github.kydzombie.legacyluggage.item.IBagItem;
@@ -57,17 +56,9 @@ public class LegacyLuggageClient {
         );
 
         event.register(
-                LegacyLuggage.NAMESPACE.id("open_backpack"),
-                new GuiHandler(
-                        (GuiHandler.ScreenFactoryNoMessage) (player, inventory) -> new BackpackScreen(player.inventory, new BagInventory(player.inventory.armor[2])),
-                        () -> null
-                )
-        );
-
-        event.register(
                 LegacyLuggage.NAMESPACE.id("open_pouch_bag"),
                 new GuiHandler(
-                        (GuiHandler.ScreenFactoryNoMessage) (player, inventory) -> new PouchBagScreen(player.inventory, AccessoryAccess.getAccessories(player, "back")[0]),
+                        (GuiHandler.ScreenFactoryNoMessage) (player, inventory) -> new BackpackScreen(player.inventory, AccessoryAccess.getAccessories(player, "back")[0]),
                         () -> null
                 )
         );

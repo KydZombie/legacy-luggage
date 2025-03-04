@@ -5,11 +5,11 @@ import net.modificationstation.stationapi.api.template.item.TemplateArmorItem;
 import net.modificationstation.stationapi.api.util.Identifier;
 
 // TODO: Stop using ArmorItem hopefully
-public class WearableBagItem extends TemplateArmorItem implements IBagItem {
+public class ClassicBackpackItem extends TemplateArmorItem implements IBagItem {
     private final int width;
     private final int height;
 
-    public WearableBagItem(Identifier identifier, int width, int height) {
+    public ClassicBackpackItem(Identifier identifier, int width, int height) {
         super(identifier, 0, 0, 1);
         setTranslationKey(identifier);
         setMaxCount(1);

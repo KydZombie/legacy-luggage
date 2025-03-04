@@ -1,38 +1,30 @@
 package io.github.kydzombie.legacyluggage.gui.screen;
 
-import com.matthewperiut.accessoryapi.api.helper.AccessoryAccess;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.LockedSlot;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.PouchSlot;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
 import io.github.kydzombie.legacyluggage.item.IBagItem;
-import io.github.kydzombie.legacyluggage.item.PouchBagItem;
+import io.github.kydzombie.legacyluggage.item.ClassicBackpackItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
 
-public class PouchBagScreenHandler extends ScreenHandler {
-    public ItemStack bagStack;
-    public PouchBagItem pouchBagItem;
+public class ClassicBackpackScreenHandler extends ScreenHandler {
+    public ClassicBackpackItem backpackItem;
 
-    public ItemStack[] pouchStacks;
-    public BagInventory[] pouchInventories;
-    public PouchBagScreenHandler(PlayerInventory playerInventory, ItemStack bagStack) {
-        this.bagStack = bagStack;
-        pouchBagItem = (PouchBagItem) bagStack.getItem();
-        pouchStacks = pouchBagItem.getPouches(bagStack);
-        pouchInventories = new BagInventory[pouchStacks.length];
-        for (int i = 0; i < pouchInventories.length; i++) {
-            if (pouchStacks[i] == null) continue;
-            pouchInventories[i] = new BagInventory(pouchStacks[i]);
-        }
+    BagInventory backpackInventory;
 
-        for (int i = 0; i < pouchInventories.length; i++) {
-            BagInventory pouchInventory = pouchInventories[i];
-            if (pouchInventory == null) continue;
-            for (int col = 0; col < pouchInventory.size(); col++) {
-                addSlot(new PouchSlot(pouchInventory, col, col * 18, 24 + i * 18));
+    public ClassicBackpackScreenHandler(PlayerInventory playerInventory, BagInventory backpackInventory) {
+        ItemStack backpackStack = playerInventory.armor[2];
+        backpackItem = (ClassicBackpackItem) backpackStack.getItem();
+        this.backpackInventory = backpackInventory;
+
+        for (int row = 0; row < 2; row++) {
+            for (int col = 0; col < 3; col++) {
+                int slot = col + row * 3;
+                addSlot(new PouchSlot(backpackInventory, slot, 62 + (col * 18), 26 + (row * 18)));
             }
         }
 
@@ -62,21 +54,13 @@ public class PouchBagScreenHandler extends ScreenHandler {
 
     @Override
     public boolean canUse(PlayerEntity player) {
-        ItemStack[] backStacks = AccessoryAccess.getAccessories(player, "back");
-        return backStacks.length > 0 &&
-                backStacks[0] != null &&
-                backStacks[0].getItem() instanceof PouchBagItem;
+        ItemStack stack = player.inventory.armor[2];
+        return stack != null && stack.getItem() instanceof ClassicBackpackItem;
     }
 
     @Override
     public void onClosed(PlayerEntity player) {
-        for (int i = 0; i < pouchInventories.length; i++) {
-            BagInventory pouchInventory = pouchInventories[i];
-            if (pouchInventory == null) continue;
-            pouchInventory.writeNbt(pouchStacks[i]);
-        }
-        pouchBagItem.setPouches(bagStack, pouchStacks);
-
+        backpackInventory.writeNbt(player.inventory.armor[2]);
         super.onClosed(player);
     }
 }
