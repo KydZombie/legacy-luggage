@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "#minecraft:coals",
+    "minecraft:stone",
+    "minecraft:cobblestone",
+    "minecraft:iron_ingot",
+    "minecraft:gold_ingot",
+    "minecraft:diamond"
+  ]
+}

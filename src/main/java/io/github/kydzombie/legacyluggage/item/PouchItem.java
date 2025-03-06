@@ -61,4 +61,14 @@ public class PouchItem extends TemplateItem implements IBagItem {
 
         super.inventoryTick(stack, world, entity, slot, selected);
     }
+
+    // TODO: Not an int?
+    public int getSlotIcon(ItemStack pouch) {
+        return 0;
+    }
+
+    // TODO: @NotNull or something
+    public boolean canInsert(ItemStack pouch, ItemStack stack) {
+        return stack != null && !(stack.getItem() instanceof PouchItem);
+    }
 }

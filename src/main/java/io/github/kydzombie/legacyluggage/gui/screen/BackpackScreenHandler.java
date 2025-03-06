@@ -18,23 +18,35 @@ public class BackpackScreenHandler extends ScreenHandler {
 
     public ItemStack[] pouchStacks;
     public BagInventory[] pouchInventories;
+
+    private int rows;
+
     public BackpackScreenHandler(PlayerInventory playerInventory, ItemStack bagStack) {
         this.bagStack = bagStack;
         backpackItem = (BackpackItem) bagStack.getItem();
         pouchStacks = backpackItem.getPouches(bagStack);
         pouchInventories = new BagInventory[pouchStacks.length];
+        rows = 0;
         for (int i = 0; i < pouchInventories.length; i++) {
             if (pouchStacks[i] == null) continue;
+            rows++;
             pouchInventories[i] = new BagInventory(pouchStacks[i]);
         }
 
-        for (int i = 0; i < pouchInventories.length; i++) {
-            BagInventory pouchInventory = pouchInventories[i];
+        int invRow = 0;
+        for (int invIndex = 0; invIndex < pouchInventories.length; invIndex++) {
+            BagInventory pouchInventory = pouchInventories[invIndex];
             if (pouchInventory == null) continue;
+            final int INVENTORY_WIDTH = (9 * 18) + 14;
+            int width = pouchInventory.size() * 18;
+            int offsetX = ((INVENTORY_WIDTH - width) / 2);
             for (int col = 0; col < pouchInventory.size(); col++) {
-                addSlot(new PouchSlot(pouchInventory, col, 6 + col * 18, 6 + i * 18));
+                addSlot(new PouchSlot(pouchInventory, col, offsetX + col * 18, 18 + invRow * 18, pouchStacks[invIndex]));
             }
+            invRow++;
         }
+
+        int playerOffset = (this.rows - 4) * 18;
 
         // Player inventory
         for(int row = 0; row < 3; ++row) {
@@ -42,9 +54,9 @@ public class BackpackScreenHandler extends ScreenHandler {
                 int slot = col + row * 9 + 9;
                 ItemStack stack = playerInventory.getStack(slot);
                 if (stack != null && stack.getItem() instanceof IBagItem bagItem && bagItem.isOpen(stack)) {
-                    addSlot(new LockedSlot(playerInventory, slot, 8 + col * 18, 84 + row * 18));
+                    addSlot(new LockedSlot(playerInventory, slot, 8 + col * 18, 103 + row * 18 + playerOffset));
                 } else {
-                    addSlot(new Slot(playerInventory, slot, 8 + col * 18, 84 + row * 18));
+                    addSlot(new Slot(playerInventory, slot, 8 + col * 18, 103 + row * 18 + playerOffset));
                 }
             }
         }
@@ -53,9 +65,9 @@ public class BackpackScreenHandler extends ScreenHandler {
         for(int slot = 0; slot < 9; ++slot) {
             ItemStack stack = playerInventory.getStack(slot);
             if (stack != null && stack.getItem() instanceof IBagItem bagItem && bagItem.isOpen(stack)) {
-                addSlot(new LockedSlot(playerInventory, slot, 8 + slot * 18, 142));
+                addSlot(new LockedSlot(playerInventory, slot, 8 + slot * 18, 161 + playerOffset));
             } else {
-                addSlot(new Slot(playerInventory, slot, 8 + slot * 18, 142));
+                addSlot(new Slot(playerInventory, slot, 8 + slot * 18, 161 + playerOffset));
             }
         }
     }

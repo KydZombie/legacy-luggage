@@ -1,5 +1,7 @@
 package io.github.kydzombie.legacyluggage.gui.screen;
 
+import com.matthewperiut.accessoryapi.api.helper.AccessoryAccess;
+import com.matthewperiut.accessoryapi.impl.slot.AccessorySlot;
 import io.github.kydzombie.legacyluggage.block.entity.BagTableBlockEntity;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.BagTableBagSlot;
 import io.github.kydzombie.legacyluggage.gui.screen.slot.BagTablePouchSlot;
@@ -39,6 +41,7 @@ public class BagTableScreenHandler extends ScreenHandler {
             }
         }
 
+        addSlot(new AccessorySlot(playerInventory, playerInventory.main.length + AccessoryAccess.setAccessory();));
 
         // Player inventory
         for(int row = 0; row < 3; ++row) {

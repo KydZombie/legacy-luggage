@@ -3,7 +3,6 @@ package io.github.kydzombie.legacyluggage.gui.screen.ingame;
 import io.github.kydzombie.legacyluggage.gui.screen.PouchScreenHandler;
 import io.github.kydzombie.legacyluggage.inventory.BagInventory;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import org.lwjgl.opengl.GL11;
 

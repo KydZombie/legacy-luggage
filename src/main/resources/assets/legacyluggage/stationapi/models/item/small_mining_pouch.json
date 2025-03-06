@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "legacyluggage:item/small_mining_pouch"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "legacyluggage:open": 1
+      },
+      "model": "legacyluggage:item/small_mining_pouch_open"
+    }
+  ]
+}

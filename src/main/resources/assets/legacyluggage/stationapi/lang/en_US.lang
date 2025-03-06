@@ -2,6 +2,9 @@
 tile.@.bag_table.name=Bag Table
 
 item.@.small_pouch.name=Small Pouch
+item.@.small_mining_pouch.name=Small Mining Pouch
+item.@.small_lumber_pouch.name=Small Lumber Pouch
+
 item.@.small_backpack.name=Small Backpack
 item.@.large_backpack.name=Large Backpack
 

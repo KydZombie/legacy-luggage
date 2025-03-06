@@ -28,7 +28,7 @@ public class PouchScreenHandler extends ScreenHandler {
         pouchItem = (PouchItem) pouchStack.getItem();
 
         for (int i = 0; i < 3; i++) {
-            addSlot(new PouchSlot(pouchInventory, i, 62 + (i * 18), 29));
+            addSlot(new PouchSlot(pouchInventory, i, 62 + (i * 18), 29, pouchStack));
         }
 
         // Player inventory

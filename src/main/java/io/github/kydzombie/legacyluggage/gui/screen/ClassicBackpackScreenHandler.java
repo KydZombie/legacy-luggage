@@ -24,7 +24,8 @@ public class ClassicBackpackScreenHandler extends ScreenHandler {
         for (int row = 0; row < 2; row++) {
             for (int col = 0; col < 3; col++) {
                 int slot = col + row * 3;
-                addSlot(new PouchSlot(backpackInventory, slot, 62 + (col * 18), 26 + (row * 18)));
+                // TODO: null is not intended
+                addSlot(new PouchSlot(backpackInventory, slot, 62 + (col * 18), 26 + (row * 18), null));
             }
         }
 

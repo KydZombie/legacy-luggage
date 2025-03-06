@@ -7,10 +7,12 @@ import io.github.kydzombie.legacyluggage.block.entity.BagTableBlockEntity;
 import io.github.kydzombie.legacyluggage.gui.screen.BackpackScreenHandler;
 import io.github.kydzombie.legacyluggage.item.BackpackItem;
 import io.github.kydzombie.legacyluggage.item.PouchItem;
+import io.github.kydzombie.legacyluggage.item.TagFilteredPouchItem;
 import net.fabricmc.api.ModInitializer;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.modificationstation.stationapi.api.event.block.entity.BlockEntityRegisterEvent;
 import net.modificationstation.stationapi.api.event.registry.BlockRegistryEvent;
@@ -19,6 +21,9 @@ import net.modificationstation.stationapi.api.event.registry.MessageListenerRegi
 import net.modificationstation.stationapi.api.gui.screen.container.GuiHelper;
 import net.modificationstation.stationapi.api.mod.entrypoint.EntrypointManager;
 import net.modificationstation.stationapi.api.network.packet.MessagePacket;
+import net.modificationstation.stationapi.api.registry.ItemRegistry;
+import net.modificationstation.stationapi.api.registry.tag.ItemTags;
+import net.modificationstation.stationapi.api.tag.TagKey;
 import net.modificationstation.stationapi.api.util.Namespace;
 import org.apache.logging.log4j.Logger;
 
@@ -55,16 +60,26 @@ public class LegacyLuggage implements ModInitializer {
     }
 
     public static PouchItem smallPouchItem;
+    public static TagFilteredPouchItem smallMiningPouchItem;
+    public static TagFilteredPouchItem smallLumberPouchItem;
 
 //    public static ClassicBackpackItem smallBackpackItem;
 
     public static BackpackItem smallBackpackItem;
     public static BackpackItem largeBackpackItem;
 
+    public static TagKey<Item> miningPouchTag;
+    public static TagKey<Item> lumberPouchTag;
+
     @EventListener
     private static void registerItems(ItemRegistryEvent event) {
+        miningPouchTag = TagKey.of(ItemRegistry.KEY, NAMESPACE.id("mining_pouch_items"));
+        lumberPouchTag = TagKey.of(ItemRegistry.KEY, NAMESPACE.id("lumber_pouch_items"));
+
         // TODO: Finalize sizes
         smallPouchItem = new PouchItem(NAMESPACE.id("small_pouch"), 3, 1);
+        smallMiningPouchItem = new TagFilteredPouchItem(NAMESPACE.id("small_mining_pouch"), 3, 2, miningPouchTag, 1);
+        smallLumberPouchItem = new TagFilteredPouchItem(NAMESPACE.id("small_lumber_pouch"), 3, 2, lumberPouchTag, 2);
 
 //        smallBackpackItem = new ClassicBackpackItem(NAMESPACE.id("small_backpack"), 3, 2);
 
